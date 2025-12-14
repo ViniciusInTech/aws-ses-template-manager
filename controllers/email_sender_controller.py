@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form, BackgroundTasks
 from requests.bulk_raw_email_request import BulkRawEmailRequest
 from requests.template_request import SendEmailRequest, SendRawEmailRequest
 from services.bulk_raw_email_service import BulkRawEmailService
@@ -102,27 +102,25 @@ john@mail.com,John,15%,New York
 ```
 """
 )
+@router.post("/send-csv-raw")
 async def send_raw_email_from_csv(
+    background_tasks: BackgroundTasks,
     payload: str = Form(...),
     file: UploadFile = File(...)
 ):
-    try:
-        data = json.loads(payload)
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON format in payload")
-
-    parsed = BulkRawEmailRequest(**data)
-
-    if not file.filename.endswith(".csv"):
-        raise HTTPException(status_code=400, detail="File must be a CSV file")
-
+    data = json.loads(payload)
     content = await file.read()
 
-    return bulk_service.send_bulk(
+    background_tasks.add_task(
+        bulk_service.send_bulk_async,
         csv_file=content,
-        subject=parsed.subject,
-        html_body=parsed.html_body,
-        text_body=parsed.text_body,
-        from_email=parsed.from_email,
-        delay_ms=parsed.delay_ms
+        subject=data["subject"],
+        html_body=data["html_body"],
+        text_body=data.get("text_body"),
+        from_email=data["from_email"],
+        delay_ms=data.get("delay_ms", 0)
     )
+
+    return {
+        "message": "Bulk email sending started"
+    }
