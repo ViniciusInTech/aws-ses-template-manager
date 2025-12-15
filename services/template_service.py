@@ -1,4 +1,4 @@
-from requests.template_request import TemplateCreate, TemplateUpdate, SendEmailRequest, SendRawEmailRequest
+from api_requests.template_request import TemplateCreate, TemplateUpdate, SendEmailRequest, SendRawEmailRequest
 from services.aws_client import AWSClient
 
 

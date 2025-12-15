@@ -1,6 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Form, BackgroundTasks
-from requests.bulk_raw_email_request import BulkRawEmailRequest
-from requests.template_request import SendEmailRequest, SendRawEmailRequest
+from api_requests.template_request import SendEmailRequest, SendRawEmailRequest
 from services.bulk_raw_email_service import BulkRawEmailService
 from services.template_service import TemplateService
 import json

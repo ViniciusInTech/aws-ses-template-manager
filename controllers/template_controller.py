@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from requests.template_request import (
+from api_requests.template_request import (
     TemplateCreate,
     TemplateUpdate,
     SendEmailRequest,
