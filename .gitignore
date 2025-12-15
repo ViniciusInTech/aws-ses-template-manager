@@ -1,5 +1,9 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.log
+*.pyc
+*.pyo
+*.pyd.pyc
 *.py[cod]
 *$py.class
 
@@ -50,17 +54,9 @@ coverage.xml
 
 # dotenv environment variables
 .env
-.env.*
 
 # mypy
 .mypy_cache/
 
 # Pyre type checker
 .pyre/
-
-# Logs
-*.log
-
-__pycache__/*
-__pycache__/main.cpython-312.pyc
-config/__pycache__/settings.cpython-312.pyc
