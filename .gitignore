@@ -60,3 +60,7 @@ coverage.xml
 
 # Logs
 *.log
+
+__pycache__/*
+__pycache__/main.cpython-312.pyc
+config/__pycache__/settings.cpython-312.pyc
