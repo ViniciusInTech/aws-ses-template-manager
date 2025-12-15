@@ -24,13 +24,13 @@ class BulkRawEmailService:
         return re.sub(r"{{\s*(.*?)\s*}}", replace, text)
 
     def send_bulk_async(
-            self,
-            csv_file: bytes,
-            subject: str,
-            html_body: str,
-            text_body: str | None,
-            from_email: str,
-            delay_ms: int
+        self,
+        csv_file: bytes,
+        subject: str,
+        html_body: str,
+        text_body: str | None,
+        from_email: str,
+        delay_ms: int
     ) -> None:
 
         buffer = BytesIO(csv_file)
@@ -43,10 +43,7 @@ class BulkRawEmailService:
         total = len(reader)
         sent = 0
 
-        self.logger.info(
-            "Bulk email sending started",
-            extra={"total_emails": total}
-        )
+        self.logger.info(f"Bulk email sending started | total={total}")
 
         for index, row in enumerate(reader, start=1):
             email = row.get("email")
@@ -68,42 +65,21 @@ class BulkRawEmailService:
                 sent += 1
 
                 self.logger.info(
-                    "Email sent",
-                    extra={
-                        "email": email,
-                        "current": index,
-                        "sent": sent,
-                        "remaining": total - index,
-                        "total": total
-                    }
+                    f"Email sent | email={email} | "
+                    f"current={index} | sent={sent} | remaining={total - index} | total={total}"
                 )
 
             except Exception as exc:
                 self.logger.error(
-                    "Failed to send email",
-                    extra={
-                        "email": email,
-                        "current": index,
-                        "sent": sent,
-                        "remaining": total - index,
-                        "total": total,
-                        "error": str(exc)
-                    }
+                    f"Failed to send email | email={email} | "
+                    f"current={index} | sent={sent} | remaining={total - index} | "
+                    f"total={total} | error={str(exc)}"
                 )
 
             if delay_ms > 0 and index < total:
-                self.logger.info(
-                    "Waiting before next email",
-                    extra={"delay_ms": delay_ms}
-                )
+                self.logger.info(f"Waiting before next email | delay_ms={delay_ms}")
                 time.sleep(delay_ms / 1000)
 
         self.logger.info(
-            "Bulk email sending finished",
-            extra={
-                "total": total,
-                "sent": sent,
-                "failed": total - sent
-            }
+            f"Bulk email sending finished | total={total} | sent={sent} | failed={total - sent}"
         )
-
